@@ -290,7 +290,9 @@ class DefaultConverter(BaseConverter):
                             if value is not None:
                                 setattr(note_imf, key, value)
                         case "tags":
-                            note_imf.tags.extend([imf.Tag(tag) for tag in value])
+                            note_imf.tags.extend(
+                                [imf.Tag(tag) for tag in value if value is not None]
+                            )
                         case _:
                             note_imf.custom_metadata[key] = value
             case "pdf":

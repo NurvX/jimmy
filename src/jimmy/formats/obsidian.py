@@ -57,7 +57,9 @@ class Converter(converter.BaseConverter):
         # frontmatter tags
         # https://help.obsidian.md/Editing+and+formatting/Properties#Default+properties
         metadata, body = frontmatter.parse(body)
-        frontmatter_tags = typing.cast(list[str], metadata.get("tags", []))
+        frontmatter_tags = typing.cast(
+            list[str], [tag for tag in metadata.get("tags", []) if tag is not None]
+        )
 
         # aliases seem to be only used in the link description
         # frontmatter_.get("aliases", [])
