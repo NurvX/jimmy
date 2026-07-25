@@ -54,9 +54,7 @@ class Converter(converter.BaseConverter):
                 resources.append(
                     imf.Resource(
                         temp_filename,
-                        jimmy.md_lib.links.make_link(
-                            link.text, link.url, is_image=link.is_image
-                        ),
+                        jimmy.md_lib.links.make_link(link.text, link.url, is_image=link.is_image),
                         temp_filename.name,
                     )
                 )
@@ -70,7 +68,7 @@ class Converter(converter.BaseConverter):
 
         return note_body, resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: Path, parent: imf.Notebook):
         self.logger.debug(f'Converting note {self._input_note_index + 1} "{file_.stem}"')
         # Use a simple index to avoid folder name issues on Windows.

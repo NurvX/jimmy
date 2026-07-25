@@ -7,7 +7,7 @@ from jimmy import common, converter, intermediate_format as imf
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_jrnl):
         title = f"{note_jrnl['date']} {note_jrnl['time']} {note_jrnl['title']}"
         self.logger.debug(f'Converting note "{title}"')

@@ -43,7 +43,7 @@ class Converter(converter.BaseConverter):
                         )
         return body, resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: Path, parent_notebook: imf.Notebook, metadata: dict):
         if file_.name == "info.json":
             return  # handled already

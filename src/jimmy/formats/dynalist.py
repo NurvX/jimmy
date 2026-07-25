@@ -24,7 +24,7 @@ def handle_markdown_links(body: str, root_folder: Path) -> imf.NoteLinks:
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item: Path, parent: imf.Notebook):
         # We get a zip with opml and txt. Only advantage of opml over txt is
         # the owner attribute. So just use txt, because it's simpler.

@@ -110,7 +110,7 @@ class Converter(converter.BaseConverter):
         self.logger.debug(f'Note "{name}" exists already. New name: "{new_name}".')
         return new_name
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, entry, resource_id_filename_map, root_notebook: imf.Notebook):
         created = common.iso_to_datetime(entry["creationDate"])
         title = self.get_unique_name(created.strftime("%Y-%m-%d"))

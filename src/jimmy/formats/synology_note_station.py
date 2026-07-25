@@ -116,7 +116,7 @@ class Converter(converter.BaseConverter):
                     break
         return resources
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_id, note_id_title_map):
         note = json.loads((self.root_path / note_id).read_text(encoding="utf-8"))
 

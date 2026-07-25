@@ -73,7 +73,7 @@ class Converter(converter.BaseConverter):
                 )
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, markdown: str, metadata_json: dict):
         title, body = jimmy.md_lib.text.split_title_from_body(markdown, h1=False)
         self.logger.debug(f'Converting note "{title}"')

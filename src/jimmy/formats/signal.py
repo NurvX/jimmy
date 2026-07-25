@@ -17,7 +17,7 @@ class Converter(converter.BaseConverter):
         self.password = config.password
         self.resource_folder = common.get_temp_folder()
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, title, messages: list[sigexport.models.Message]):
         self.logger.debug(f'Converting chat "{title}"')
         note_imf = imf.Note(title, source_application=self.format)

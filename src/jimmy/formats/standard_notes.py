@@ -211,7 +211,7 @@ class Converter(converter.BaseConverter):
         self.archive_notebook = imf.Notebook("Archive")
         self.trash_notebook = imf.Notebook("Trash")
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item: dict):
         title = item["content"].get("title", common.unique_title())
         self.logger.debug(f'Converting note "{title}"')

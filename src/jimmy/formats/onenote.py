@@ -103,7 +103,7 @@ class Converter(converter.BaseConverter):
                         continue
                     self.convert_note(sub_item, section)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_section_and_toc(self, file_or_folder: Path, parent: imf.Notebook):
         """
         Convert onenote sections (.one) and the TOC (.onetoc2) to HTML files in a folder hierarchy.

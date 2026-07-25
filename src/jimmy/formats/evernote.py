@@ -65,7 +65,7 @@ class Converter(converter.BaseConverter):
             note.resources.extend(resources)
             note.note_links.extend(note_links)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note, parent_notebook: imf.Notebook):
         title = note.find("title")
         title = common.unique_title() if title is None or title.text is None else title.text.strip()
@@ -191,7 +191,7 @@ class Converter(converter.BaseConverter):
             note_imf.body = note_imf.body.replace(f"tasklist://{group_id}", "\n" + tasks_sorted_md)
         parent_notebook.child_notes.append(note_imf)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_file(self, file_or_folder: Path, parent_notebook: imf.Notebook):
         self.logger.debug(f'Converting note "{file_or_folder.name}"')
         # We are only interested in complete notes.

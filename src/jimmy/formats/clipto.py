@@ -8,7 +8,7 @@ import jimmy.md_lib.text
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_clipto: dict, tags: imf.Tags):
         text = note_clipto.get("text", "")
         if (title := note_clipto.get("title")) is None:

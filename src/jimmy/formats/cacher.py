@@ -9,7 +9,7 @@ import jimmy.md_lib.text
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: dict, notebook: imf.Notebook, tags: imf.Tags):
         if file_["filetype"] != "markdown":
             self.logger.warning(

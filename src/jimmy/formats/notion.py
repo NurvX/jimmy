@@ -72,7 +72,7 @@ class Converter(converter.BaseConverter):
                 self.logger.debug(f'Unhandled link "{link}"')
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item: Path, relative_parent_path: Path, parent_notebook: imf.Notebook):
         if (
             item.is_file()

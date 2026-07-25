@@ -53,7 +53,7 @@ class Converter(converter.BaseConverter):
                 resources.append(imf.Resource(Path(link.url), original_link_text, link.text))
         return body, resources
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_month(self, file_: Path):
         year, month = file_.stem.split("-", 1)
         # data is encapsulated in yaml, notes are in txt2tags markup
@@ -62,7 +62,7 @@ class Converter(converter.BaseConverter):
         for day, data in note_dict.items():
             self.convert_note(data, datetime.date(int(year), int(month), int(day)))
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, data: dict, date: datetime.date):
         title = date.strftime("%Y-%m-%d")
         self.logger.debug(f'Converting note "{title}"')

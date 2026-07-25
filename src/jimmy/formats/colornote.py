@@ -61,7 +61,7 @@ class Converter(converter.BaseConverter):
             note_links.append(imf.NoteLink(str(link), link.url, link.text or link.url))
         return note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_json: dict):
         # actual conversion
         # TODO: reminder, tags, ...

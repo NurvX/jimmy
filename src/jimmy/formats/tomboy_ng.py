@@ -54,7 +54,7 @@ class Converter(converter.BaseConverter):
             md_content.append(node.tail)
         return "".join(md_content).strip(), note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_file: Path):
         # Format: https://wiki.gnome.org/Apps/Tomboy/NoteXmlFormat
         root_node = ET.parse(note_file).getroot()

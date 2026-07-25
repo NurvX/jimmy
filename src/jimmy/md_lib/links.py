@@ -67,8 +67,7 @@ class MarkdownLink:
     @property
     def is_web_link(self) -> bool:
         return any(
-            self.url.startswith(f"{protocol}://")
-            for protocol in jimmy.md_lib.common.web_schemes
+            self.url.startswith(f"{protocol}://") for protocol in jimmy.md_lib.common.web_schemes
         )
 
     @property

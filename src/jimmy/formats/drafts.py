@@ -57,7 +57,7 @@ class Converter(converter.BaseConverter):
                     return line[:80].strip()
         return common.unique_title()
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, draft):
         title = self.get_title(draft["content"])
         self.logger.debug(f'Converting draft "{title}"')

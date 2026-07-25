@@ -8,7 +8,7 @@ import jimmy.md_lib.links
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, chat):
         title = chat["name"]
         self.logger.debug(f'Converting chat "{title}"')

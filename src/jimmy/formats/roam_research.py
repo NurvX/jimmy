@@ -45,7 +45,7 @@ class Converter(converter.BaseConverter):
             block_uids.extend(child_block_uids)
         return body_roam, block_uids
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, page):
         # title is the first line
         title = page["title"].strip()

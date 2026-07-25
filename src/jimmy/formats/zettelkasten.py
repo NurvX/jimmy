@@ -45,7 +45,7 @@ class Converter(converter.BaseConverter):
                 )
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, id_: int, zettel, file_or_folder: Path, tag_id_name_map):
         title = item.text if (item := zettel.find("title")) is not None else ""
         assert title is not None

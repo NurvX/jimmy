@@ -41,7 +41,7 @@ class Converter(converter.BaseConverter):
                 resources.append(imf.Resource(resource_path, str(link), link.text))
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item: Path, parent: imf.Notebook):
         if item.suffix.lower() not in common.MARKDOWN_SUFFIXES:
             return

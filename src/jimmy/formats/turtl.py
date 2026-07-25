@@ -52,7 +52,7 @@ class Converter(converter.BaseConverter):
                     note_links.append(imf.NoteLink(str(link), Path(link.url).stem, link.text))
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note: dict, file_map: dict):
         title = note["title"]
         self.logger.debug(f'Converting note "{title}"')

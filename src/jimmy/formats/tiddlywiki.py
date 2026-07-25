@@ -416,7 +416,7 @@ class Converter(converter.BaseConverter):
     # .json conversion
     ############################################################
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note_json(self, tiddler):
         title = tiddler["title"]
         self.logger.debug(f'Converting note "{title}"')
@@ -492,7 +492,7 @@ class Converter(converter.BaseConverter):
     # .tid conversion
     ############################################################
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_or_folder: Path):
         tiddler = file_or_folder.read_text(encoding="utf-8")
         try:

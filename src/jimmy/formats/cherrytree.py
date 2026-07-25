@@ -200,7 +200,7 @@ class Converter(converter.BaseConverter):
     def get_offset(item) -> int:
         return int(item.attrib.get("char_offset", -1))
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, node, root_notebook: imf.Notebook):
         title = node.attrib.get("name", "")
         self.logger.debug(f'Converting note "{title}", parent "{root_notebook.title}"')
@@ -280,7 +280,7 @@ class Converter(converter.BaseConverter):
             parent_notebook = root_notebook if new_root_notebook is None else new_root_notebook
             parent_notebook.child_notes.append(note_imf)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_ctd(self, ctd_file: Path, parent_notebook: imf.Notebook):
         root_node = ET.parse(ctd_file).getroot()
 

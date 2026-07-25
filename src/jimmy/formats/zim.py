@@ -39,7 +39,7 @@ class Converter(converter.BaseConverter):
                 )
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item: Path, parent: imf.Notebook):
         if item.name == "notebook.zim" or item.suffix.lower() != ".txt":
             return

@@ -1,7 +1,6 @@
 """Common functions for converting notes, related to the filesystem and metadata."""
 
 import base64
-from collections.abc import Callable
 import dataclasses
 import datetime as dt
 import difflib
@@ -15,7 +14,6 @@ import string
 import tarfile
 import tempfile
 import time
-from typing import Any, TypeVar, cast
 from urllib.parse import unquote
 import uuid
 import zipfile
@@ -60,26 +58,36 @@ class Config:
 
 MARKDOWN_SUFFIXES = (".md", ".mdown", ".markdown")
 MARKDOWN_LINK_SUFFIXES = MARKDOWN_SUFFIXES + ("",)
-F = TypeVar("F", bound=Callable[..., Any])
 
 
-def catch_all_exceptions(func: F) -> F:
-    """
-    Decorator to catch all exceptions.
-    Useful if many individual notes are converted.
-    """
+# TODO: fix typing: untyped-decorator
+# https://stackoverflow.com/a/5929165/7410886
+def catch_all_exceptions(message: str = "Failed to convert note."):  # factory
 
-    def wrapper(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-        except Exception as exc:  # pylint: disable=broad-except
-            LOGGER.warning(
-                'Failed to convert note. Enable the extended log by "--stdout-log-level DEBUG".'
-            )
-            # https://stackoverflow.com/a/52466005/7410886
-            LOGGER.debug(exc, exc_info=True)
+    def catch_all_exceptions_decorator(func):
+        """
+        Decorator to catch all exceptions.
+        Useful if many individual notes are converted.
+        """
 
-    return cast(F, wrapper)
+        def wrapper(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except Exception as exc:  # pylint: disable=broad-except
+                nonlocal message  # https://stackoverflow.com/a/2609593/7410886
+                if logging.root.level > logging.DEBUG:
+                    final_message = (
+                        message + ' Enable the extended log by "--stdout-log-level DEBUG".'
+                    )
+                else:
+                    final_message = message + " Check the traceback below."
+                LOGGER.warning(final_message)
+                # https://stackoverflow.com/a/52466005/7410886
+                LOGGER.debug(exc, exc_info=True)
+
+        return wrapper
+
+    return catch_all_exceptions_decorator
 
 
 def safe_path(path: Path | str, max_name_length: int = 50) -> Path | str:

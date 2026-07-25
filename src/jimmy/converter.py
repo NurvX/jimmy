@@ -95,7 +95,7 @@ class BaseConverter(abc.ABC):
         Convert a single note.
 
         Some implementation remarks:
-        - Should be decorated with @common.catch_all_exceptions to avoid the complete
+        - Should be decorated with @common.catch_all_exceptions() to avoid the complete
           conversion to crash.
         - Should log the note title to see some progress.
         """
@@ -118,6 +118,7 @@ class BaseConverter(abc.ABC):
         #     - extract note links
         #     - append note to the notebook
 
+    @common.catch_all_exceptions(message="Failed to apply front matter.")
     def apply_postprocessing(self, root_notebook: imf.Notebook):
         # apply frontmatter/template to all note bodies
         if self.template is not None:
@@ -236,7 +237,7 @@ class DefaultConverter(BaseConverter):
             #     self.logger.debug(f"Unhandled link: {link}")
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: Path, parent: imf.Notebook):
         """Default conversion function for files. Uses pandoc directly."""
         self.logger.debug(f'Converting note "{file_.name}"')
@@ -337,9 +338,7 @@ class DefaultConverter(BaseConverter):
                     case _:
                         note_imf.body = file_.read_text(encoding="utf-8")
             case _:  # last resort
-                pandoc_format = jimmy.md_lib.convert.PANDOC_INPUT_FORMAT_MAP.get(
-                    format_, format_
-                )
+                pandoc_format = jimmy.md_lib.convert.PANDOC_INPUT_FORMAT_MAP.get(format_, format_)
                 note_imf.body = jimmy.md_lib.convert.markup_to_markdown(
                     file_.read_text(encoding="utf-8"),
                     pwd=file_.parent,

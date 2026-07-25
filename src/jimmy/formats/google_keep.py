@@ -13,7 +13,7 @@ class Converter(converter.BaseConverter):
         self.archive_notebook = imf.Notebook("Archive")
         self.trash_notebook = imf.Notebook("Trash")
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: Path):
         note_keep = json.loads(file_.read_text(encoding="utf-8"))
 

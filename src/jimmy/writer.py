@@ -265,7 +265,7 @@ class FilesystemWriter:
             ),
         )
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def write_note(self, note: imf.Note):
         # Handle resources and note links first, since the note body changes.
         # "dict.fromkeys()" to remove duplicated resources while retaining order.
@@ -299,7 +299,7 @@ class FilesystemWriter:
         self.stats.notes += 1  # update stats only after successful write
         self.stats.tags += len(note.tags)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def write_notebook(self, root_notebook: imf.Notebook):
         assert root_notebook.path is not None
         root_notebook.path.mkdir(exist_ok=True, parents=True)

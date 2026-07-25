@@ -56,7 +56,7 @@ class Converter(converter.BaseConverter):
                     case _:
                         self.logger.debug(f'Ignoring table "{table_name}"')
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_notebook(self, folder):
         # there seems to be only one level of folders
         notebook = imf.Notebook(
@@ -65,7 +65,7 @@ class Converter(converter.BaseConverter):
         )
         self.root_notebook.child_notebooks.append(notebook)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, entry):
         # date is UTC - tz-offset can be ignored
         timestamp = get_text(entry.find("date"))

@@ -46,7 +46,7 @@ class Converter(converter.BaseConverter):
                 tags.append(imf.Tag(link.text.lstrip("#")))
         return note_body, resources, note_links, tags
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_upnote: dict, resource_path: Path):
         title = note_upnote["data"]["title"]
         self.logger.debug(f'Converting note "{title}"')

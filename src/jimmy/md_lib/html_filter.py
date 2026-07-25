@@ -115,9 +115,7 @@ def link_internal_headings(soup: bs4.BeautifulSoup):
             or not linked_element.name.startswith("h")
         ):
             continue
-        element.attrs["href"] = "#" + jimmy.md_lib.text.to_markdown_header_id(
-            linked_element.text
-        )
+        element.attrs["href"] = "#" + jimmy.md_lib.text.to_markdown_header_id(linked_element.text)
 
 
 INLINE_FORMATTING_TAGS = [

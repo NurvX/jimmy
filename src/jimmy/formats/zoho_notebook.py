@@ -38,7 +38,7 @@ class Converter(converter.BaseConverter):
                 resources.append(imf.Resource(self.root_path / link.url, str(link), link.text))
         return resources, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, file_: Path):
         soup = BeautifulSoup(file_.read_text(encoding="utf-8"), "html.parser")
 

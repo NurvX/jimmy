@@ -124,7 +124,7 @@ class Converter(converter.BaseConverter):
             note_md.append("\n```\n")
         return note_md, tags, note_links
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_json: dict):
         title = note_json["subject"]
         self.logger.debug(f'Converting note "{title}"')

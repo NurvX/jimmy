@@ -47,7 +47,7 @@ class Converter(converter.BaseConverter):
         # we need a resource folder to avoid writing files to the source folder
         self.resource_folder = common.get_temp_folder()
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(
         self,
         page: dict,

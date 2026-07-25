@@ -14,7 +14,7 @@ def get_text(element, default: str | None = None) -> str | None:
 
 
 class Converter(converter.BaseConverter):
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, item, parent_notebook: imf.Notebook, namespaces):
         title = get_text(item.find("title"), default=common.unique_title())
         if (post_type := get_text(item.find("wp:post_type", namespaces))) in (
@@ -83,7 +83,7 @@ class Converter(converter.BaseConverter):
 
         parent_notebook.child_notes.append(note_imf)
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert(self, file_or_folder: Path):
         # first pass: parse namespaces
         # TODO: move to common

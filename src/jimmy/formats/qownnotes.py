@@ -84,7 +84,7 @@ class Converter(converter.BaseConverter):
             conn.close()
         return note_tag_map
 
-    @common.catch_all_exceptions
+    @common.catch_all_exceptions()
     def convert_note(self, note_qownnotes: Path, note_tag_map):
         title = note_qownnotes.stem
         self.logger.debug(f'Converting note "{title}"')
