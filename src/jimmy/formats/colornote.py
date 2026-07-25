@@ -65,7 +65,7 @@ class Converter(converter.BaseConverter):
     def convert_note(self, note_json: dict):
         # actual conversion
         # TODO: reminder, tags, ...
-        title = note_json["title"]
+        title = note_json["title"].strip()
         if title in ("name_master_password", "syncable_settings"):
             self.logger.debug(f'Skipping note "{title}"')
             # TODO: needed?
