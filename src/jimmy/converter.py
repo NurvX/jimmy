@@ -118,7 +118,7 @@ class BaseConverter(abc.ABC):
         #     - extract note links
         #     - append note to the notebook
 
-    @common.catch_all_exceptions(message="Failed to apply front matter.")
+    @common.catch_all_exceptions(message="Failed to apply post processing.")
     def apply_postprocessing(self, root_notebook: imf.Notebook):
         # apply frontmatter/template to all note bodies
         if self.template is not None:
