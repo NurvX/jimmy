@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from jimmy import common, converter, intermediate_format as imf
+import jimmy.md_lib.conversations
 import jimmy.md_lib.links
 
 
@@ -181,9 +182,6 @@ class Converter(converter.BaseConverter):
                 # Keep the split of json files to prevent too large markdown files.
                 # (10000 messages per file)
                 conversation_json = json.loads(conversation_file.read_text(encoding="utf-8"))
-                if len(conversation_json.get("participants", [])) > 2:
-                    self.logger.debug(f"Skipping group conversation {conversation.name}.")
-                    continue
 
                 messages = conversation_json.get("messages")
 
@@ -191,28 +189,32 @@ class Converter(converter.BaseConverter):
                     self.logger.debug(f"No messages in {conversation_file}.")
                     continue
 
-                note_body = []
-                current_date = None
+                md_conversation = jimmy.md_lib.conversations.Conversation()
                 for message in messages:
-                    message_date = timestamp_to_date_str(message["timestamp_ms"] / 1000)
-                    if current_date is None or message_date != current_date:
-                        current_date = message_date
-                        note_body.append(f"## {message_date}")
                     sender = (
                         fix_encoding_error(message["sender_name"])
                         if message["sender_name"]
                         else "Unknown"
                     )
-
-                    message_content = self.get_message_content(message)
-                    note_body.append(f"**{sender}**: {fix_encoding_error(message_content)}")
-                note_body_str = "\n\n".join(note_body)
+                    md_message = jimmy.md_lib.conversations.Message(
+                        sender,
+                        fix_encoding_error(self.get_message_content(message)),
+                        prefix=common.timestamp_to_datetime(
+                            message["timestamp_ms"] / 1000
+                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                    )
+                    md_conversation.messages.append(md_message)
+                note_body_str = md_conversation.to_md()
 
                 title = (
                     fix_encoding_error(conversation_json["title"])
                     if conversation_json["title"]
                     else "Unknown"
                 )
+                if len(conversation_json.get("participants", [])) > 2 and (
+                    title.startswith(",") or title.startswith(" ")
+                ):
+                    title = "Unknown" + title
                 if file_index != 0:
                     title = f"{title} ({file_index})"
 

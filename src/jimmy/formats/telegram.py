@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from jimmy import common, converter, intermediate_format as imf
+import jimmy.md_lib.conversations
 import jimmy.md_lib.links
 
 
@@ -14,33 +15,39 @@ class Converter(converter.BaseConverter):
         self.logger.debug(f'Converting chat "{title}"')
         note_imf = imf.Note(title, source_application=self.format, original_id=str(chat["id"]))
 
-        note_body = []
+        md_conversation = jimmy.md_lib.conversations.Conversation()
         for message in chat["messages"]:
             if message["type"] != "service" and message.get("action") == "create_group":
                 note_imf.created = common.timestamp_to_datetime(int(message["date_unixtime"]))
             if message["type"] != "message":
                 continue
 
-            content = message.get("text", "")
+            message_time = common.timestamp_to_datetime(int(message["date_unixtime"]))
+            md_message = jimmy.md_lib.conversations.Message(
+                message["from"],
+                message.get("text", ""),
+                prefix=message_time.strftime("%Y-%m-%d %H:%M:%S"),
+            )
+
             if (file_ := message.get("file")) is not None:
-                if content:
-                    content += "\n"
                 file_md = jimmy.md_lib.links.make_link(
                     message.get("file_name", ""), str(self.root_path / file_), is_image=True
                 )
                 note_imf.resources.append(
                     imf.Resource(self.root_path / file_, file_md, message.get("file_name"))
                 )
-                content += file_md
-            message_time = common.timestamp_to_datetime(int(message["date_unixtime"]))
-            note_body.append(
-                f"{message_time.strftime('%Y-%m-%d %H:%M:%S')}, **{message['from']}**: {content}"
-            )
+                md_message.attachment_links.append(file_md)
+
+            md_conversation.messages.append(md_message)
 
             # update the updated time each message to get the timestamp
             # of the last message at the end
             note_imf.updated = message_time
-        note_imf.body = "\n\n".join(note_body)
+        note_imf.body = md_conversation.to_md()
+
+        if not note_imf.body:
+            self.logger.debug("Skipping empty chat.")
+            return
 
         self.root_notebook.child_notes.append(note_imf)
 

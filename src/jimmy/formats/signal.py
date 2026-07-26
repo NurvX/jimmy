@@ -8,6 +8,7 @@ import sigexport.files
 import sigexport.models
 
 from jimmy import common, converter, intermediate_format as imf
+import jimmy.md_lib.conversations
 import jimmy.md_lib.links
 
 
@@ -22,24 +23,25 @@ class Converter(converter.BaseConverter):
         self.logger.debug(f'Converting chat "{title}"')
         note_imf = imf.Note(title, source_application=self.format)
 
-        note_body = []
+        md_conversation = jimmy.md_lib.conversations.Conversation()
         for message in messages:
             if note_imf.created is None:
                 # created date is the date of the first message
                 note_imf.created = message.date
 
-            message_prefix = f"{message.date.strftime('%Y-%m-%d %H:%M:%S')}, **{message.sender}**:"
-            if message.quote:
-                note_body.extend([message_prefix, message.quote.strip(), message.body.strip()])
-            else:
-                note_body.append(f"{message_prefix} {message.body}")
+            md_message = jimmy.md_lib.conversations.Message(
+                message.sender,
+                message.body,
+                prefix=message.date.strftime("%Y-%m-%d %H:%M:%S"),
+                quote=message.quote,
+            )
 
             for resource in message.attachments:
                 resource_path = self.resource_folder / title / resource.path
                 resource_link = jimmy.md_lib.links.make_link(
                     resource.name, str(resource_path), is_image=common.is_image(Path(resource.path))
                 )
-                note_body.append(resource_link)
+                md_message.attachment_links.append(resource_link)
 
                 if resource_path.exists():
                     note_imf.resources.append(imf.Resource(resource_path, resource_link))
@@ -47,10 +49,16 @@ class Converter(converter.BaseConverter):
                     # self.logger.debug(f"File '{resource_path}' doesn't exist. Ignoring.")
                     pass  # silently skip old files to don't pollute the log
 
+            md_conversation.messages.append(md_message)
+
             # update the updated time each message to get the timestamp
             # of the last message at the end
             note_imf.updated = message.date
-        note_imf.body = "\n\n".join(note_body)
+        note_imf.body = md_conversation.to_md()
+
+        if not note_imf.body:
+            self.logger.debug("Skipping empty chat.")
+            return
 
         self.root_notebook.child_notes.append(note_imf)
 
