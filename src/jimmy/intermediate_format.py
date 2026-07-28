@@ -283,6 +283,39 @@ class Note:
                         self.body, tags=" ".join(sorted(tag.title for tag in self.tags))
                     )
                     self.body = frontmatter.dumps(post)
+            case "dendron":
+                # Dendron frontmatter format:
+                # https://wiki.dendron.so/notes/frontmatter
+                import uuid
+
+                metadata: dict = {}
+
+                # Use the original_id if available (stable), otherwise generate a UUID.
+                if self.original_id:
+                    metadata["id"] = self.original_id
+                else:
+                    metadata["id"] = str(uuid.uuid4())[:22]  # similar length as example
+
+                metadata["title"] = self.title
+                metadata["desc"] = ""  # you can set a description if you have one
+
+                # Convert datetime to milliseconds since epoch
+                if self.created:
+                    metadata["created"] = int(self.created.timestamp() * 1000)
+                if self.updated:
+                    metadata["updated"] = int(self.updated.timestamp() * 1000)
+
+                # Traits – default to empty list; we can customise based on note type latter
+                # (e.g., if the note is a daily journal, add 'journalNote')
+                metadata["traitIds"] = []
+
+                # Tags – list of strings (hierarchical if you use dots)
+                metadata["tags"] = (
+                    sorted(tag.title for tag in self.tags if tag.title) if self.tags else []
+                )
+
+                post = frontmatter.Post(self.body, **metadata)
+                self.body = frontmatter.dumps(post, Dumper=yaml.Dumper)
             case _:
                 LOGGER.debug(f'Ignoring unknown frontmatter "{frontmatter_}"')
 
