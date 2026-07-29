@@ -11,7 +11,10 @@ import jimmy.md_lib.links
 class Converter(converter.BaseConverter):
     @common.catch_all_exceptions()
     def convert_note(self, chat):
-        title = chat["name"]
+        if chat.get("type", "") == "saved_messages":
+            title = "Saved Messages"
+        else:
+            title = chat.get("name", "Unnamed Chat")
         self.logger.debug(f'Converting chat "{title}"')
         note_imf = imf.Note(title, source_application=self.format, original_id=str(chat["id"]))
 
