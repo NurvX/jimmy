@@ -9,6 +9,7 @@ import logging
 from pathlib import Path
 import re
 import string
+import uuid
 
 import frontmatter
 import yaml
@@ -227,6 +228,8 @@ class Note:
             )
 
     def apply_frontmatter(self, frontmatter_: str):
+        metadata: dict = {}
+
         match frontmatter_:
             case "futo":
                 # https://gitlab.futo.org/futo-notes/futo-notes/-/blob/885231efaac35ad5b7aee0f02dcbea693931aecc/docs/markdown-spec.md#L323
@@ -246,7 +249,6 @@ class Note:
             case "joplin":
                 # https://joplinapp.org/help/dev/spec/interop_with_frontmatter/
                 # Arbitrary metadata will be ignored.
-                metadata: dict = {}
                 for field in dataclasses.fields(Note):
                     match field.name:
                         case "title" | "author" | "latitude" | "longitude" | "altitude":
@@ -267,7 +269,6 @@ class Note:
             case "obsidian":
                 # frontmatter format:
                 # https://help.obsidian.md/Editing+and+formatting/Properties#Property+format
-                metadata = {}
                 if self.tags:
                     metadata["tags"] = sorted(
                         normalize_tag_for_obsidian(tag.title) for tag in self.tags
@@ -286,9 +287,6 @@ class Note:
             case "dendron":
                 # Dendron frontmatter format:
                 # https://wiki.dendron.so/notes/frontmatter
-                import uuid
-
-                metadata: dict = {}
 
                 # Use the original_id if available (stable), otherwise generate a UUID.
                 if self.original_id:
