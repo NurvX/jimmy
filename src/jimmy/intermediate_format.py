@@ -286,34 +286,26 @@ class Note:
                     self.body = frontmatter.dumps(post)
             case "dendron":
                 # Dendron frontmatter format:
-                # https://wiki.dendron.so/notes/frontmatter
+                # https://github.com/dendronhq/dendron-site/blob/fbc07769235bca514f88be79a523311d72c7cafd/vault/dendron.topic.frontmatter.md
 
-                # Use the original_id if available (stable), otherwise generate a UUID.
-                if self.original_id:
-                    metadata["id"] = self.original_id
-                else:
-                    metadata["id"] = str(uuid.uuid4())[:22]  # similar length as example
+                # Generate a UUID - following default Dendron ID convention
+                metadata["id"] = str(uuid.uuid4().hex)[:23]
 
                 metadata["title"] = self.title
-                metadata["desc"] = ""  # you can set a description if you have one
 
                 # Convert datetime to milliseconds since epoch
                 if self.created:
-                    metadata["created"] = int(self.created.timestamp() * 1000)
+                    metadata["created"] = common.datetime_to_ms(self.created)
                 if self.updated:
                     metadata["updated"] = int(self.updated.timestamp() * 1000)
 
-                # Traits – default to empty list; we can customise based on note type latter
-                # (e.g., if the note is a daily journal, add 'journalNote')
-                metadata["traitIds"] = []
-
                 # Tags – list of strings (hierarchical if you use dots)
                 metadata["tags"] = (
-                    sorted(tag.title for tag in self.tags if tag.title) if self.tags else []
+                    sorted(tag.title for tag in self.tags if tag.title)
                 )
 
                 post = frontmatter.Post(self.body, **metadata)
-                self.body = frontmatter.dumps(post, Dumper=yaml.Dumper)
+                self.body = frontmatter.dumps(post)
             case _:
                 LOGGER.debug(f'Ignoring unknown frontmatter "{frontmatter_}"')
 
